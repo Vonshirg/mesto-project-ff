@@ -14,9 +14,9 @@ function createCard(item, funcDelete) {
   cardTitle.textContent = item.name;
   const deleteButton = placesItem.querySelector(".card__delete-button");
   deleteButton.addEventListener("click", (evt) => {
-    deleteCard(evt);
+    funcDelete(evt);
   });
-  
+
   return placesItem;
 }
 
