@@ -16,6 +16,7 @@ function createCard(item, funcDelete) {
   deleteButton.addEventListener("click", (evt) => {
     deleteCard(evt);
   });
+  
   return placesItem;
 }
 
