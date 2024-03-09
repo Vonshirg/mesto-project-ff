@@ -6,7 +6,7 @@ import {
   deleteCard,
   likeFunc,
 } from "../components/cards.js";
-import { closeModal, openModal} from "../components/modal.js";
+import { closeModal, openModal } from "../components/modal.js";
 // @todo: DOM узлы
 
 const placesList = document.querySelector(".places__list");
@@ -45,7 +45,8 @@ buttonEditProfile.addEventListener("click", () => {
 
 buttonsPopupClose.forEach((btn) => {
   btn.addEventListener("mousedown", (evt) => {
-    closeModal(evt);
+    const popup = evt.target.closest(".popup_is-opened");
+    closeModal(popup);
   });
 });
 
@@ -56,7 +57,7 @@ popups.forEach((btn) => {
       evt.target.classList.contains("popup") &&
       !evt.target.classList.contains("popup__close")
     ) {
-      closeModal(evt);
+      closeModal(btn);
     }
   });
 });
@@ -72,7 +73,8 @@ function handleFormSubmit(evt) {
   evt.preventDefault();
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
-  closeModal(evt);
+  const popup = evt.target.closest(".popup_is-opened");
+  closeModal(popup);
   formProfile.reset();
 }
 // @todo: Добавление карточки
@@ -84,10 +86,10 @@ function addNewCard(evt) {
   placesList.prepend(
     createCard(newCard, deleteCard, cardTemplate, openCardPopup, likeFunc)
   );
-  closeModal(evt);
+  const popup = evt.target.closest(".popup_is-opened");
+  closeModal(popup);
   formNewPlace.reset();
 }
 
 formProfile.addEventListener("submit", handleFormSubmit);
 formNewPlace.addEventListener("submit", addNewCard);
-
