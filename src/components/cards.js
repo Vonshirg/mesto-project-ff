@@ -1,3 +1,5 @@
+
+import { deleteServerCard} from './api.js';
 export const initialCards = [
   {
     name: "Архыз",
@@ -24,19 +26,24 @@ export const initialCards = [
     link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
   },
 ];
-
-export function createCard(item, funcDelete, cloneItem, openCardPop, likeCard) {
+const myId = "f60d86de6f110eb2f37b45d5";
+export function createCard(item, funcDelete, cloneItem, openCardPop, likeCard, id) {
   const placesItem = cloneItem.querySelector(".places__item").cloneNode(true);
   const cardImage = placesItem.querySelector(".card__image");
   cardImage.src = item.link;
   cardImage.alt = item.name;
+  cardImage.id = item._id;
   const cardTitle = placesItem.querySelector(".card__title");
   cardTitle.textContent = item.name;
   const deleteButton = placesItem.querySelector(".card__delete-button");
+   if (id !== item.owner._id){
+    deleteButton.remove()
+  } else{
+      deleteButton.addEventListener("click", (evt) => {
+      deleteServerCard(item._id);
+      funcDelete(evt);
+    })};
   const likeButton = placesItem.querySelector(".card__like-button");
-  deleteButton.addEventListener("click", (evt) => {
-    funcDelete(evt);
-  });
   cardImage.addEventListener("click", (evt) => {
     openCardPop(evt);
   });

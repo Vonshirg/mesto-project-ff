@@ -8,7 +8,7 @@ import {
 } from "../components/cards.js";
 import { closeModal, openModal } from "../components/modal.js";
 import {clearValidation, enableValidation, validationConfig} from "../components/validation.js";
-import {getCards} from "../components/api.js";
+import {getCards, getUser, editProfile, postCard} from "../components/api.js";
 // @todo: DOM узлы
 
 const placesList = document.querySelector(".places__list");
@@ -30,13 +30,9 @@ const profileDescription = document.querySelector(".profile__description");
 const cardTitle = document.querySelector(".popup__caption");
 
 
+
 // @todo: Вывести карточки на страницу
-/*initialCards.forEach(function (item) {
-  placesList.append(
-    createCard(item, deleteCard, cardTemplate, openCardPopup, likeFunc)
-  );
-});
-*/
+
 buttonAddCard.addEventListener("click", () => {
   openModal(popupCard);
 });
@@ -77,6 +73,7 @@ function handleFormSubmit(evt) {
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = jobInput.value;
   const popup = evt.target.closest(".popup_is-opened");
+  editProfile(nameInput.value, jobInput.value);
   closeModal(popup);
   formProfile.reset();
   clearValidation(formProfile,validationConfig);
@@ -90,27 +87,37 @@ function addNewCard(evt) {
   placesList.prepend(
     createCard(newCard, deleteCard, cardTemplate, openCardPopup, likeFunc)
   );
+  postCard(formNewPlace.elements["place-name"].value, formNewPlace.elements.link.value);
   const popup = evt.target.closest(".popup_is-opened");
   closeModal(popup);
   formNewPlace.reset();
   clearValidation(formNewPlace,validationConfig);
 }
-
 enableValidation(validationConfig);
 
 formProfile.addEventListener("submit", handleFormSubmit);
 formNewPlace.addEventListener("submit", addNewCard);
 
 console.log(getCards());
+console.log(getUser());
 
-Promise.all([getCards(),])
-  .then(([cards, users]) => {
+
+Promise.all([getCards(), getUser()])
+  .then(([cards, user]) => {
+    profileTitle.textContent = user.name;
+    profileDescription.textContent = user.about;
+    let userId = user._id;
     cards.forEach((cardData) => {
-      placesList.append(createCard(cardData, deleteCard, cardTemplate, openCardPopup, likeFunc)); 
+      placesList.append(createCard(cardData, deleteCard, cardTemplate, openCardPopup, likeFunc, userId)); 
     });
+    
 })
   .catch((err) => {
     console.log(err);
   });
+
+  
+
+  
 
 
