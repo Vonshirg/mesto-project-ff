@@ -7,6 +7,8 @@ import {
   likeFunc,
 } from "../components/cards.js";
 import { closeModal, openModal } from "../components/modal.js";
+import {clearValidation, enableValidation, validationConfig} from "../components/validation.js";
+import {getCards} from "../components/api.js";
 // @todo: DOM узлы
 
 const placesList = document.querySelector(".places__list");
@@ -26,14 +28,15 @@ const jobInput = document.querySelector(".popup__input_type_description");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const cardTitle = document.querySelector(".popup__caption");
-console.log(popups);
+
 
 // @todo: Вывести карточки на страницу
-initialCards.forEach(function (item) {
+/*initialCards.forEach(function (item) {
   placesList.append(
     createCard(item, deleteCard, cardTemplate, openCardPopup, likeFunc)
   );
 });
+*/
 buttonAddCard.addEventListener("click", () => {
   openModal(popupCard);
 });
@@ -76,6 +79,7 @@ function handleFormSubmit(evt) {
   const popup = evt.target.closest(".popup_is-opened");
   closeModal(popup);
   formProfile.reset();
+  clearValidation(formProfile,validationConfig);
 }
 // @todo: Добавление карточки
 function addNewCard(evt) {
@@ -89,7 +93,24 @@ function addNewCard(evt) {
   const popup = evt.target.closest(".popup_is-opened");
   closeModal(popup);
   formNewPlace.reset();
+  clearValidation(formNewPlace,validationConfig);
 }
+
+enableValidation(validationConfig);
 
 formProfile.addEventListener("submit", handleFormSubmit);
 formNewPlace.addEventListener("submit", addNewCard);
+
+console.log(getCards());
+
+Promise.all([getCards(),])
+  .then(([cards, users]) => {
+    cards.forEach((cardData) => {
+      placesList.append(createCard(cardData, deleteCard, cardTemplate, openCardPopup, likeFunc)); 
+    });
+})
+  .catch((err) => {
+    console.log(err);
+  });
+
+
