@@ -84,8 +84,9 @@ function addNewCard(evt) {
   const newCard = {};
   newCard.link = formNewPlace.elements.link.value;
   newCard.name = formNewPlace.elements["place-name"].value;
+  newCard.owner= {_id: 'f60d86de6f110eb2f37b45d5'};
   placesList.prepend(
-    createCard(newCard, deleteCard, cardTemplate, openCardPopup, likeFunc)
+    createCard(newCard, deleteCard, cardTemplate, openCardPopup, likeFunc, 'f60d86de6f110eb2f37b45d5')
   );
   postCard(formNewPlace.elements["place-name"].value, formNewPlace.elements.link.value);
   const popup = evt.target.closest(".popup_is-opened");

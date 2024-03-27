@@ -26,7 +26,6 @@ export const initialCards = [
     link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
   },
 ];
-const myId = "f60d86de6f110eb2f37b45d5";
 export function createCard(item, funcDelete, cloneItem, openCardPop, likeCard, id) {
   const placesItem = cloneItem.querySelector(".places__item").cloneNode(true);
   const cardImage = placesItem.querySelector(".card__image");
@@ -40,7 +39,10 @@ export function createCard(item, funcDelete, cloneItem, openCardPop, likeCard, i
     deleteButton.remove()
   } else{
       deleteButton.addEventListener("click", (evt) => {
-      deleteServerCard(item._id);
+      const card =  evt.target.closest(".places__item");
+      const image = card.querySelector(".card__image");
+      console.log(image.id);
+      deleteServerCard(image.id);
       funcDelete(evt);
     })};
   const likeButton = placesItem.querySelector(".card__like-button");

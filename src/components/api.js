@@ -56,7 +56,7 @@ export function getUser(){
       method: 'DELETE',
       headers: config.headers
     })
-      .then(handleResponse)
+      .then(requestVerification)
   }
 
 
