@@ -7,7 +7,31 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  position: relative;
+  z-index: 0;
 }
+
+.profile__image:hover {
+  cursor: pointer;
+}
+
+.profile__image:hover::after {
+  content: url('../../../images/avatar-edit-icon.svg');
+  position: absolute;
+  top: 47px;
+  right: 47px;
+  width: 26px;
+  height: 26px;
+}
+
+.profile__image:hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, .8);
+}
+
+
 
 @media screen and (max-width: 740px) {
   .profile__image {
