@@ -77,11 +77,3 @@ export function reloadAvatar(avatar) {
     }),
   }).then(requestVerification);
 }
-
-export function renderLoading(isLoading, event) {
-  if (isLoading) {
-    event.submitter.textContent = "Сохранение...";
-  } else {
-    event.submitter.textContent = "Сохранить";
-  }
-}

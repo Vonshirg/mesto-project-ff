@@ -2,7 +2,7 @@ import { deleteServerCard, likeCard, deleteLike } from "./api.js";
 
 export function createCard(
   item,
-  funcDelete,
+  deleteFunc,
   cloneItem,
   openCardPop,
   likeCard,
@@ -29,8 +29,11 @@ export function createCard(
     deleteButton.remove();
   } else {
     deleteButton.addEventListener("click", (evt) => {
-      deleteServerCard(placesItem.id);
-      funcDelete(evt);
+      deleteServerCard(placesItem.id)
+        .then(deleteFunc(evt))
+        .catch((err) => {
+          console.log(err);
+        });
     });
   }
   if (item.hasOwnProperty("likes")) {
@@ -41,7 +44,7 @@ export function createCard(
       })
     ) {
       likeButton.classList.add("card__like-button_is-active");
-    } 
+    }
   } else {
     likeCounter.textContent = 0;
   }

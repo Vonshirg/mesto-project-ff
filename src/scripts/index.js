@@ -1,10 +1,6 @@
 // @todo: Темплейт карточки
 import "../pages/index.css";
-import {
-  createCard,
-  deleteCard,
-  likeFunc,
-} from "../components/cards.js";
+import { createCard, deleteCard, likeFunc } from "../components/cards.js";
 import { closeModal, openModal } from "../components/modal.js";
 import {
   clearValidation,
@@ -17,7 +13,6 @@ import {
   editProfile,
   postCard,
   reloadAvatar,
-  renderLoading,
 } from "../components/api.js";
 // @todo: DOM узлы
 
@@ -41,6 +36,16 @@ const profileDescription = document.querySelector(".profile__description");
 const cardTitle = document.querySelector(".popup__caption");
 const profileImage = document.querySelector(".profile__image");
 const popupAvatar = document.querySelector(".popup_type_new-avatar");
+let userId = "";
+
+// @todo: Функция визуализации загрузки
+function renderLoading(isLoading, event) {
+  if (isLoading) {
+    event.submitter.textContent = "Сохранение...";
+  } else {
+    event.submitter.textContent = "Сохранить";
+  }
+}
 
 // @todo: Вывести карточки на страницу
 
@@ -83,19 +88,21 @@ function openCardPopup(event) {
 // @todo: Редактирование профиля
 function handleFormSubmit(evt) {
   evt.preventDefault();
-  profileTitle.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
   const popup = evt.target.closest(".popup_is-opened");
   renderLoading(true, evt);
   editProfile(nameInput.value, jobInput.value)
+    .then(() => {
+      profileTitle.textContent = nameInput.value;
+      profileDescription.textContent = jobInput.value;
+      closeModal(popup);
+      formProfile.reset();
+      clearValidation(formProfile, validationConfig);
+    })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       renderLoading(false, evt);
-      closeModal(popup);
-      formProfile.reset();
-      clearValidation(formProfile, validationConfig);
     });
 }
 
@@ -103,18 +110,20 @@ function handleFormSubmit(evt) {
 function loadNewAvatar(evt) {
   evt.preventDefault();
   const url = formNewAvatar.elements.avatar.value;
-  profileImage.style = `background-image:  url(${url})`;
   const popup = evt.target.closest(".popup_is-opened");
   renderLoading(true, evt);
   reloadAvatar(url)
+    .then(() => {
+      profileImage.style = `background-image:  url(${url})`;
+      closeModal(popup);
+      formNewAvatar.reset();
+      clearValidation(formNewAvatar, validationConfig);
+    })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       renderLoading(false, evt);
-      closeModal(popup);
-      formNewAvatar.reset();
-      clearValidation(formNewAvatar, validationConfig);
     });
 }
 // @todo: Добавление карточки
@@ -123,14 +132,13 @@ function addNewCard(evt) {
   const newCard = {};
   newCard.link = formNewPlace.elements.link.value;
   newCard.name = formNewPlace.elements["place-name"].value;
-  newCard.owner = { _id: "f60d86de6f110eb2f37b45d5" };
+  newCard.owner = { _id: userId };
   renderLoading(true, evt);
   postCard(
     formNewPlace.elements["place-name"].value,
     formNewPlace.elements.link.value
   )
     .then((res) => {
-      console.log(res._id);
       newCard._id = res._id;
       placesList.prepend(
         createCard(
@@ -139,19 +147,19 @@ function addNewCard(evt) {
           cardTemplate,
           openCardPopup,
           likeFunc,
-          "f60d86de6f110eb2f37b45d5"
+          userId
         )
       );
+      const popup = evt.target.closest(".popup_is-opened");
+      closeModal(popup);
+      formNewPlace.reset();
+      clearValidation(formNewPlace, validationConfig);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       renderLoading(false, evt);
-      const popup = evt.target.closest(".popup_is-opened");
-      closeModal(popup);
-      formNewPlace.reset();
-      clearValidation(formNewPlace, validationConfig);
     });
 }
 enableValidation(validationConfig);
@@ -160,11 +168,11 @@ formProfile.addEventListener("submit", handleFormSubmit);
 formNewPlace.addEventListener("submit", addNewCard);
 formNewAvatar.addEventListener("submit", loadNewAvatar);
 
-Promise.all([getCards(), getUser()])
+Promise.all([getCards(), getUser()], userId)
   .then(([cards, user]) => {
     profileTitle.textContent = user.name;
     profileDescription.textContent = user.about;
-    let userId = user._id;
+    userId = user._id;
     profileImage.style = `background-image:  url(${user.avatar})`;
     cards.forEach((cardData) => {
       placesList.append(
@@ -178,6 +186,7 @@ Promise.all([getCards(), getUser()])
         )
       );
     });
+    return (userId = user._id);
   })
   .catch((err) => {
     console.log(err);
