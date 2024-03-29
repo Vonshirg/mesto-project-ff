@@ -31,7 +31,6 @@ export function  checkValidation(formElement, inputElement){
   }
   if (!inputElement.validity.valid) {
     showInputError(formElement, inputElement, validationConfig);
-    console.log(inputElement.validity.valid);
   } else {
     hideInputError(formElement, inputElement, validationConfig);
     

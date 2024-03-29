@@ -1,7 +1,6 @@
 // @todo: Темплейт карточки
 import "../pages/index.css";
 import {
-  initialCards,
   createCard,
   deleteCard,
   likeFunc,
@@ -160,9 +159,6 @@ enableValidation(validationConfig);
 formProfile.addEventListener("submit", handleFormSubmit);
 formNewPlace.addEventListener("submit", addNewCard);
 formNewAvatar.addEventListener("submit", loadNewAvatar);
-
-console.log(getCards());
-console.log(getUser());
 
 Promise.all([getCards(), getUser()])
   .then(([cards, user]) => {

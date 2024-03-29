@@ -80,7 +80,6 @@ export function reloadAvatar(avatar) {
 
 export function renderLoading(isLoading, event) {
   if (isLoading) {
-    console.log(event.submitter);
     event.submitter.textContent = "Сохранение...";
   } else {
     event.submitter.textContent = "Сохранить";
